@@ -224,6 +224,24 @@
 			</dependencyManagement>
       </profile>
 
+		<profile>
+			<id>Java 17</id>
+			<activation>
+				<jdk>17</jdk>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>3.2.2</version>
+						<configuration>
+							<argLine>--add-opens java.base/java.lang=ALL-UNNAMED</argLine>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 
 	</profiles>
 </project>
