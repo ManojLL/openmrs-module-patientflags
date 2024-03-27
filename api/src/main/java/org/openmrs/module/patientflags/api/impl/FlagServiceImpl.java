@@ -52,6 +52,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Implementation of the {@link FlagService}
@@ -100,17 +101,30 @@ public class FlagServiceImpl extends BaseOpenmrsService implements FlagService {
 		// we can get rid of this once onStartup is implemented
 		if (!isInitialized)
 			refreshCache();
-		
+
+		executor = Executors.newFixedThreadPool(flagCache.size());
 		// test each Flag in the cache against the specific Patient
 		for (Flag flag : filter.filter(flagCache)) {
-			// trap bad flags so that they don't hang the system
-			try {
-				if (flag.eval(patient, context))
-					results.add(flag);
-			}
-			catch (Exception e) {
-				log.error("Unable to test flag " + flag.getName() + " on patient #" + patient.getId(), e);
-			}
+			executor.submit(() -> {
+				try {
+					if (flag.eval(patient, context)) {
+						synchronized (results) {
+							results.add(flag);
+						}
+					}
+				} catch (Exception e) {
+					log.error("Unable to test flag " + flag.getName() + " on patient #" + patient.getId(), e);
+				}
+			});
+		}
+
+		// Shutdown the executor service and wait for all tasks to complete
+		executor.shutdown();
+		try {
+			executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+		} catch (InterruptedException e) {
+			log.error("Thread pool was interrupted while waiting for flag evaluation tasks to complete", e);
+			Thread.currentThread().interrupt();
 		}
 		return results;
 	}
@@ -177,7 +191,7 @@ public class FlagServiceImpl extends BaseOpenmrsService implements FlagService {
 	 */
 	public Cohort getFlaggedPatients(List<Flag> flags, Map<Object, Object> context) {
 		Cohort resultCohort = new Cohort();
-		
+
 		// test each Flag
 		for (Flag flag : flags) {
 			resultCohort = Cohort.union(resultCohort, flag.evalCohort(null, context));
