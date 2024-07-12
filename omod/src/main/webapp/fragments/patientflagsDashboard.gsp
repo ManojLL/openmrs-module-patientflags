@@ -18,10 +18,8 @@
                     try {
                          if (typeof response === "string") {
                             jq("#flags").html(response.replace("{patientflags=", "").replace("}", ""));
-                        } else if (typeof response === "object") {
-                            jq("#flags").html(response.patientflags);
                         } else {
-                            jq("#flags").html("No patient flags found in response");
+                            jq("#flags").html(response.patientflags);
                         }
                     } catch (error) {
                         console.error("Error processing flags response: ", error);
