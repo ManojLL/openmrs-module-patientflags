@@ -163,7 +163,6 @@ public class EditFlagController {
 	 */
 	@RequestMapping(method = RequestMethod.POST)
 	public ModelAndView processSubmit(@ModelAttribute("flag") Flag flag, BindingResult result, SessionStatus status) {
-	
 		// validate form entries
 		validator.validate(flag, result);
 		

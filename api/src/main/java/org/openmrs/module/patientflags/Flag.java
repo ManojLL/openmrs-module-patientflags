@@ -32,7 +32,16 @@ public class Flag extends BaseOpenmrsMetadata {
 	private Integer flagId;
 	
 	private String name;
-	
+
+	private transient String flagType;
+
+	private transient String flagCritiria;
+
+	private transient String flagValue;
+
+	private transient String flagLogic;
+
+
 	/* Criteria to determine whether to trigger a flag */
 	private String criteria;
 	
@@ -238,7 +247,39 @@ public class Flag extends BaseOpenmrsMetadata {
 	public String getLocalizedMessage() {
 		return Context.getMessageSourceService().getMessage(message);
 	}
-	
+
+	public String getFlagType() {
+		return flagType;
+	}
+
+	public void setFlagType(String flagType) {
+		this.flagType = flagType;
+	}
+
+	public String getFlagCritiria() {
+		return flagCritiria;
+	}
+
+	public void setFlagCritiria(String flagCritiria) {
+		this.flagCritiria = flagCritiria;
+	}
+
+	public String getFlagHighValue() {
+		return flagValue;
+	}
+
+	public void setFlagHighValue(String flagHighValue) {
+		this.flagValue = flagHighValue;
+	}
+
+	public String getFlagLogic() {
+		return flagLogic;
+	}
+
+	public void setFlagLogic(String flagLogic) {
+		this.flagLogic = flagLogic;
+	}
+
 	/**
 	 * Adds a tag to the set associated with the flag
 	 * 

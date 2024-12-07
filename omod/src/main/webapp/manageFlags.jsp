@@ -12,6 +12,9 @@
 <a
 	href="${pageContext.request.contextPath}/module/patientflags/editFlag.form"><spring:message
 	code="patientflags.manageFlags.addFlag" /></a>
+<a
+	href="${pageContext.request.contextPath}/module/patientflags/generateFlag.form"><spring:message
+	code="patientflags.manageFlags.generateFalg" /></a>
 <br />
 <br />
 
